@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="keywords" content="Hitalk,极简风,评论系统,极简风评论系统,comment system">
   <meta name="description" content="Hitalk - 一款基于Leancloud的极简风评论系统">
   <meta name="mobile-web-app-capable" content="yes">
@@ -117,7 +118,6 @@
       font-size: 14px;
       color: #9c9c9c;
     }
-
   </style>
   <link rel="stylesheet" type="text/css" href="./easter/iconfont.css">
   <link rel="stylesheet" href="./easter/style.css" type="text/css">
@@ -156,13 +156,13 @@
     &copy; 2019
     <a href="https://github.com/Ihoey" target="_blank">梦魇小栈</a>
   </div>
-<!--   <script type="text/javascript" src="/js/bundle.js"></script>
+  <!--   <script type="text/javascript" src="/js/bundle.js"></script>
 <script type="text/javascript" src="/js/app.js"></script> -->
   <script>
     var GUEST = ['nick', 'mail', 'link'];
     var guest = 'nick,mail,link';
     guest = guest.split(',').filter(function (item) {
-        return GUEST.indexOf(item) > -1;
+      return GUEST.indexOf(item) > -1;
     });
     var Hitalk = new Hitalk({
       el: '.comment',
@@ -171,7 +171,7 @@
       placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
       avatar: 'monsterid',
       guest_info: guest,
-      pageSize: 10
+      pageSize: 6
     });
 
     // window.onload = function() {
