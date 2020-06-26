@@ -15,12 +15,12 @@ const HtmlUtil = {
   encode(str) {
     return !!str
       ? str
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/ /g, '&nbsp;')
-          .replace(/\'/g, '&#39;')
-          .replace(/\"/g, '&quot;')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/ /g, '&nbsp;')
+        .replace(/\'/g, '&#39;')
+        .replace(/\"/g, '&quot;')
       : ''
   },
   /**
@@ -31,12 +31,12 @@ const HtmlUtil = {
   decode(str) {
     return !!str
       ? str
-          .replace(/&amp;/g, '&')
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&#39;/g, "'")
-          .replace(/&quot;/g, '"')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&#39;/g, "'")
+        .replace(/&quot;/g, '"')
       : ''
   }
 }

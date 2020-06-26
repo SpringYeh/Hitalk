@@ -64,11 +64,11 @@ class Hitalk {
     this.page = 0
     // 评论数
     this.initCount()
-      // 初始化评论
-      !!option && this.init(option)
+    // 初始化评论
+    !!option && this.init(option)
   }
 
-  throw (msg) {
+  throw(msg) {
     throw new Error(`Hitalk: ${msg}`)
   }
 
@@ -167,12 +167,12 @@ class Hitalk {
         )
       else
         console &&
-        console.log(
-          `%c${ex}\n%cHitalk%c${this.version} ${issue}`,
-          'color:red;',
-          'background:#000;padding:5px;line-height:30px;color:#fff;',
-          'background:#456;line-height:30px;padding:5px;color:#fff;'
-        )
+          console.log(
+            `%c${ex}\n%cHitalk%c${this.version} ${issue}`,
+            'color:red;',
+            'background:#000;padding:5px;line-height:30px;color:#fff;',
+            'background:#456;line-height:30px;padding:5px;color:#fff;'
+          )
       return
     }
 
@@ -182,7 +182,7 @@ class Hitalk {
     this.alert.show = o => {
       _mark.innerHTML = `<div class="valert txt-center"><div class="vtext">${
         o.text
-      }</div><div class="vbtns"></div></div>`
+        }</div><div class="vbtns"></div></div>`
       let _vbtns = _mark.querySelector('.vbtns')
       let _cBtn = `<button class="vcancel vbtn">${(o && o.ctxt) || '我再看看'}</button>`
       let _oBtn = `<button class="vsure vbtn">${(o && o.otxt) || '继续提交'}</button>`
@@ -386,11 +386,11 @@ class Hitalk {
           _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == sl ? '@' : '#') +
             `(${e})`}"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${
             y == sl ? 'newpaopao' : 'alu'
-          }/${e + subfix}.png"></li>`
+            }/${e + subfix}.png"></li>`
         })
         _li += `<li class="smilies-name ${
           y == sl ? 'smilies-package-active' : ''
-        }" data-id="${i}"><span>${y}</span></li>`
+          }" data-id="${i}"><span>${y}</span></li>`
         fragment.appendChild(_ul) //添加ul
       })
       let _div = document.createElement('div')
@@ -448,11 +448,11 @@ class Hitalk {
         Event.on('input', _el, e => {
           defaultComment[_v] =
             _v === 'comment' ?
-            marked(_el.value, {
-              sanitize: !0,
-              breaks: !0
-            }) :
-            HtmlUtil.encode(_el.value)
+              marked(_el.value, {
+                sanitize: !0,
+                breaks: !0
+              }) :
+              HtmlUtil.encode(_el.value)
         })
       }
     }
@@ -535,14 +535,14 @@ class Hitalk {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
           `<img src="https://cdn.dode.top/newpaopao/${matched[1] +
-            subfix}.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
+          subfix}.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
         )
       }
       while ((matched = defaultComment.comment.match(aReg))) {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
           `<img src="https://cdn.dode.top/alu/${matched[1] +
-            subfix}.png" class="biaoqing alu" height=33 width=33 no-zoom />`
+          subfix}.png" class="biaoqing alu" height=33 width=33 no-zoom />`
         )
       }
 
@@ -705,12 +705,12 @@ const HtmlUtil = {
   encode(str) {
     return !!str ?
       str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/ /g, '&nbsp;')
-      .replace(/\'/g, '&#39;')
-      .replace(/\"/g, '&quot;') :
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/ /g, '&nbsp;')
+        .replace(/\'/g, '&#39;')
+        .replace(/\"/g, '&quot;') :
       ''
   },
   /**
@@ -721,12 +721,12 @@ const HtmlUtil = {
   decode(str) {
     return !!str ?
       str
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&#39;/g, "'")
-      .replace(/&quot;/g, '"') :
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&#39;/g, "'")
+        .replace(/&quot;/g, '"') :
       ''
   }
 }
