@@ -364,11 +364,11 @@ class Hitalk {
       //   0: '.prev',
       //   [parseInt(_count / this.pageSize, 10)]: '.next'
       // }
-      // // Object.values(domClass).map(e => this.el.querySelector(`.vpage ${e}`).classList.remove('dn'))
-      // // if (domClass[this.page]) {
-      // //   this.el.querySelector(`.vpage ${domClass[this.page]}`).classList.add('dn')
-      // //   return
-      // // }
+      // Object.values(domClass).map(e => this.el.querySelector(`.vpage ${e}`).classList.remove('dn'))
+      // if (domClass[this.page]) {
+      //   this.el.querySelector(`.vpage ${domClass[this.page]}`).classList.add('dn')
+      //   return
+      // }
     }
 
     let insertDom = (ret, mt) => {
