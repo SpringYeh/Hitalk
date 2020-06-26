@@ -15,7 +15,7 @@
       .smilies-logo {
         border-radius: 4px 4px 0 0;
         border-bottom: 0;
-        border-color: #777;
+        // border-color: #777;
         color: #777;
       }
 
@@ -33,7 +33,7 @@
 
       &.smilies-open {
         .smilies-logo {
-          border: 1px solid #ddd;
+          // border: 1px solid #ddd;
           border-radius: 0 0 4px 4px;
           border-top: 0;
         }
@@ -44,7 +44,7 @@
       position: relative;
       display: inline-block;
       color: #999;
-      border: 1px solid #ccc;
+      // border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 13px;
       padding: 2px 5px;

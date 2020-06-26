@@ -1,8 +1,8 @@
 /*
  * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
- * @Last Modified by: 李若拙
- * @Last Modified time: 2020-06-22 15:31:13
+ * @Last Modified by: ihoey
+ * @Last Modified time: 2019-06-24 19:20:50
  */
 
 import md5 from 'blueimp-md5'
@@ -23,35 +23,28 @@ const defaultComment = {
   mail: '',
   link: '',
   ua: navigator.userAgent,
-  // url: '',
-  url: location.pathname,
-  ip: '',
-  at: '',
+  url: '',
   pin: 0,
   like: 0
 }
 const GUEST_INFO = ['nick', 'mail', 'link']
 const store = localStorage
 
-const cdnprefix = 'https://cdn.jsdelivr.net/gh/springyeh/cdn@1.1/emoij/'
 const smiliesData = {
-  // 泡泡: `呵呵|哈哈|吐舌|太开心|笑眼|花心|小乖|乖|捂嘴笑|滑稽|你懂的|不高兴|怒|汗|黑线|泪|真棒|喷|惊哭|阴险|鄙视|酷|啊|狂汗|what|疑问|酸爽|呀咩爹|委屈|惊讶|睡觉|笑尿|挖鼻|吐|犀利|小红脸|懒得理|勉强|爱心|心碎|玫瑰|礼物|彩虹|太阳|星星月亮|钱币|茶杯|蛋糕|大拇指|胜利|haha|OK|沙发|手纸|香蕉|便便|药丸|红领巾|蜡烛|音乐|灯泡|开心|钱|咦|呼|冷|生气|弱`,
-  泡泡: `s-1|s-2|s-3|s-4|s-5|s-6|s-7|s-8|s-9|s-10|s-11|s-12|s-13|s-14|s-15|s-16|s-17|s-18|s-19|s-20|s-21|s-22|s-23|s-24|s-25|s-26|s-27|s-28|s-29|s-30|s-31|s-32|s-33|s-34|s-35|s-36|s-37|s-38|s-39|s-40|s-41|s-42|s-43|s-67|s-45|s-46|s-47|s-48|s-49|s-50|s-51|s-52|s-53|s-54|s-55|s-56|s-57|s-58|s-59|s-60|s-61|s-62|s-63|s-64|s-65|s-66|s-44|s-68|s-69`,
+  泡泡: `呵呵|哈哈|吐舌|太开心|笑眼|花心|小乖|乖|捂嘴笑|滑稽|你懂的|不高兴|怒|汗|黑线|泪|真棒|喷|惊哭|阴险|鄙视|酷|啊|狂汗|what|疑问|酸爽|呀咩爹|委屈|惊讶|睡觉|笑尿|挖鼻|吐|犀利|小红脸|懒得理|勉强|爱心|心碎|玫瑰|礼物|彩虹|太阳|星星月亮|钱币|茶杯|蛋糕|大拇指|胜利|haha|OK|沙发|手纸|香蕉|便便|药丸|红领巾|蜡烛|音乐|灯泡|开心|钱|咦|呼|冷|生气|弱`,
   阿鲁: `高兴|小怒|脸红|内伤|装大款|赞一个|害羞|汗|吐血倒地|深思|不高兴|无语|亲亲|口水|尴尬|中指|想一想|哭泣|便便|献花|皱眉|傻笑|狂汗|吐|喷水|看不见|鼓掌|阴暗|长草|献黄瓜|邪恶|期待|得意|吐舌|喷血|无所谓|观察|暗地观察|肿包|中枪|大囧|呲牙|抠鼻|不说话|咽气|欢呼|锁眉|蜡烛|坐等|击掌|惊喜|喜极而泣|抽烟|不出所料|愤怒|无奈|黑线|投降|看热闹|扇耳光|小眼睛|中刀`
 }
 const pReg = new RegExp('\\@\\(\\s*(' + smiliesData.泡泡 + ')\\s*\\)')
 const aReg = new RegExp('\\#\\(\\s*(' + smiliesData.阿鲁 + ')\\s*\\)')
-
 let subfix = ''
-// if (window.devicePixelRatio != undefined && window.devicePixelRatio >= 1.49) {
-//   subfix = '@2x'
-// }
+if (window.devicePixelRatio != undefined && window.devicePixelRatio >= 1.49) {
+  subfix = '@2x'
+}
 
 class Hitalk {
   constructor(option) {
     this.md5 = md5
     this.version = '1.2.0'
-    getIp();
 
     const av = option.av || AV
     const appId = option.app_id || option.appId
@@ -66,9 +59,6 @@ class Hitalk {
     this.v = av
 
     defaultComment.url = (option.path || location.pathname).replace(/index\.(html|htm)/, '')
-    // 自定义博主邮箱、头像
-    this.bzEmail = option.bzEmail || 'liruozhuo@qq.com'
-    this.bzAvatar = option.bzAvatar || 'https://cdn.jsdelivr.net/gh/SpringYeh/cdn@1.1/images/amatar/zll.jpg'
     // 分页
     this.pageSize = option.pageSize || 10
     this.page = 0
@@ -97,11 +87,11 @@ class Hitalk {
       const inputEl = guest_info.map(item => {
         switch (item) {
           case 'nick':
-            return '<input id="author" name="nick" placeholder="昵称" class="vnick vinput" type="text">'
+            return '<input name="nick" placeholder="昵称" class="vnick vinput" type="text">'
           case 'mail':
-            return '<input id="email" name="mail" placeholder="邮箱" class="vmail vinput" type="email">'
+            return '<input name="mail" placeholder="邮箱" class="vmail vinput" type="email">'
           case 'link':
-            return '<input id="url" name="link" placeholder="网址 http(s)://" class="vlink vinput" type="text">'
+            return '<input name="link" placeholder="网址 http(s)://" class="vlink vinput" type="text">'
           default:
             return ''
         }
@@ -110,61 +100,40 @@ class Hitalk {
       // 填充元素
       let placeholder = option.placeholder || ''
       let eleHTML = `
-      <div class="info">
-          <div class="count col">
-            <i class="iconfont icon-mark"></i> Comments | <span class="noticom"><a> Nothing </a></span>
-          </div>
-      </div>
       <div class="vwrap">
           <div class="welcome dn">
           	<i class="iconfont icon-admin"></i> &nbsp;&nbsp;{name}，你好
-            <span class="info-setting"><i class="iconfont icon-setting-o"></i><span class="info-edit">修改资料</span></span>
+          	<i class="iconfont icon-setting-o"></i><span class="info-edit">修改资料</span></div>
+          <div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div>
+          <div class="vedit">
+              <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
           </div>
-          <div class="${`commentput vheader item${inputEl.length}`}">
-                <div id="comment-author-info" class="card">
-                    ${inputEl.join('')}
-                </div>
-          </div>
-          <div class="ava_comments">
-              <div class="avaleft">
-                  <div id="ava-popover" class="visitor-avatar">
-                      <a class="edit-profile js-click">
-                          <img src="/img/dava.png" height="50"
-                              width="50" class="v-avatar avatar avatar-50">
-                          <span class="youke-info"></span>
-                      </a>
-                  </div>
-              </div>
-              <div class="comarea vedit">
-                  <textarea id="comment" class="veditor vinput" placeholder="${placeholder}"></textarea>
-              </div>
-          </div>
-          <div class="vcontrol com-footer">
-              <div class="col col-60">
-                <span class="smilies comment_smile">
-                <div class="col smilies-logo comment_smile_btn hint--top" data-hint="插入表情">
-                  <span><i class="iconfont icon-xiaolian"></i></span>
-                </div>
-                <div class="smilies-body"></div>
-                </span>
-              </div>
+          <div class="vcontrol">
+              <span class="col col-60 smilies">
+                  <div class="col smilies-logo"><span>^_^</span></div>
+                  <div class="col" title="Markdown is Support">MarkDown is Support</div>
+                  <div class="smilies-body"></div>
+              </span>
               <div class="col col-40 text-right">
-                  <button type="button" class="vsubmit submit">SUBMIT</button>
+                  <button type="button" class="vsubmit vbtn">回复</button>
               </div>
           </div>
           <div class="vmark dn"></div>
       </div>
+      <div class="info">
+          <div class="count col"></div>
+      </div>
       <div class="vloading"></div>
       <div class="vempty dn"></div>
       <ul class="vlist"></ul>
-      <div class="vpage txt-center"></div>`
+      <div class="vpage txt-right"></div>`
 
       this.el.innerHTML = eleHTML
 
       // Empty Data
       let vempty = this.el.querySelector('.vempty')
       const nodata = {
-        show(txt = '杨意不逢，既遇钟期！') {
+        show(txt = '还没有评论哦，快来抢沙发吧!') {
           vempty.innerHTML = txt
           vempty.classList.remove('dn')
         },
@@ -292,12 +261,10 @@ class Hitalk {
         .skip(this.page * this.pageSize)
         .find()
         .then(rets => {
+
+          addSmilies() // 填充表情
+
           let len = rets.length
-
-          if (len == 0) {
-            addSmilies() // 填充表情
-          }
-
           if (len) {
             this.el.querySelector('.vlist').innerHTML = ''
             for (let i = 0; i < len; i++) {
@@ -305,21 +272,18 @@ class Hitalk {
             }
             let _count = this.el.querySelector('.num')
             if (!_count) {
-              addSmilies() // 填充表情
+              // addSmilies() // 填充表情
 
               cq.count().then(len => {
-                const _pageCount = parseInt(len / this.pageSize) + 1
-                this.el.querySelector('.count').innerHTML = `<i class="iconfont icon-mark"></i> Comments | <span class="noticom"><a><span class="num">${len}</span> 条评论</a></span>`
+                const _pageCount = len / this.pageSize
+                this.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`
 
                 const _pageDom = (_class, _text) => `<span class="${_class} page-numbers">${_text}</span>`
-                let vpageDom = _pageDom('prev dn', '<i class="fa fa-chevron-left"></i>')
-                if (_pageCount !== 1) {
-                  for (let index = 1; index <= _pageCount; index++) {
-                    vpageDom += _pageDom(`numbers ${index == 1 ? 'current' : ''}`, index)
-                  }
+                let vpageDom = _pageDom('prev dn', '&lt;')
+                for (let index = 1; index < _pageCount; index++) {
+                  vpageDom += _pageDom(`numbers ${index == 1 ? 'current' : ''}`, index)
                 }
-
-                vpageDom += _pageDom('next dn', '<i class="fa fa-chevron-right"></i>')
+                vpageDom += _pageDom('next dn', '&gt;')
                 this.el.querySelector('.vpage').innerHTML = vpageDom
                 pageHandle(len)
 
@@ -357,16 +321,16 @@ class Hitalk {
       }
       this.el.querySelectorAll('.vpage .numbers')[this.page].classList.add('current')
 
-      // 隐藏prev、next按钮
-      // const domClass = {
-      //   0: '.prev',
-      //   [parseInt(_count / this.pageSize, 10)]: '.next'
-      // }
-      // // Object.values(domClass).map(e => this.el.querySelector(`.vpage ${e}`).classList.remove('dn'))
-      // // if (domClass[this.page]) {
-      // //   this.el.querySelector(`.vpage ${domClass[this.page]}`).classList.add('dn')
-      // //   return
-      // // }
+      const domClass = {
+        0: '.prev',
+        [parseInt(_count / this.pageSize, 10) - 1]: '.next'
+      }
+
+      Object.values(domClass).map(e => this.el.querySelector(`.vpage ${e}`).classList.remove('dn'))
+      if (domClass[this.page]) {
+        this.el.querySelector(`.vpage ${domClass[this.page]}`).classList.add('dn')
+        return
+      }
     }
 
     let insertDom = (ret, mt) => {
@@ -377,11 +341,6 @@ class Hitalk {
       let _img = gravatar['hide'] ?
         '' :
         `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`
-      if (ret.get('mail') == this.bzEmail) {
-        _img = gravatar['hide'] ?
-          '' :
-          `<img class="vimg" src='${this.bzAvatar}'>`
-      }
       _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({
         link: ret.get('link'),
         mail: ret.get('mail')
@@ -425,7 +384,7 @@ class Hitalk {
         _ul.setAttribute('data-id', i)
         smiliesData[y].split('|').forEach(e => {
           _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == sl ? '@' : '#') +
-            `(${e})`}"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="${cdnprefix}${
+            `(${e})`}"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${
             y == sl ? 'newpaopao' : 'alu'
             }/${e + subfix}.png"></li>`
         })
@@ -499,8 +458,7 @@ class Hitalk {
     }
 
     // cache
-    let getCache = (ret) => {
-
+    let getCache = () => {
       let s = store && store.HitalkCache
       if (s) {
         s = JSON.parse(s)
@@ -510,15 +468,9 @@ class Hitalk {
           this.el.querySelector(`.v${k}`).value = s[k]
           defaultComment[k] = s[k]
         }
-        // 获取头像 for cache
-        let email_avatar_src = gravatar.cdn + md5(s['mail'] || s['nick']) + gravatar.params;
-        if (s['mail'] == this.bzEmail) {
-          email_avatar_src = this.bzAvatar
-        }
         const welcome = this.el.querySelector(`.welcome`).innerHTML
         this.el.querySelector(`.welcome`).classList.remove('dn')
         this.el.querySelector(`.welcome`).innerHTML = welcome.replace('{name}', s['nick'])
-        this.el.querySelector(`.v-avatar`).src = email_avatar_src
         this.el.querySelector(`.vheader`).classList.add('hide')
         Event.on('click', this.el.querySelector(`.welcome .info-edit`), e => {
           this.el.querySelector(`.vheader`).classList.toggle('hide')
@@ -553,22 +505,20 @@ class Hitalk {
     let submitBtn = this.el.querySelector('.vsubmit')
     let submitEvt = e => {
       if (submitBtn.getAttribute('disabled')) {
-        // this.alert.show({
-        //   type: '',
-        //   text: '再等等，评论正在提交中ヾ(๑╹◡╹)ﾉ"',
-        //   ctxt: '好的'
-        // })
-        Tips('再等等，评论正在提交中ヾ(๑╹◡╹)ﾉ"');
+        this.alert.show({
+          type: '',
+          text: '再等等，评论正在提交中ヾ(๑╹◡╹)ﾉ"',
+          ctxt: '好的'
+        })
         return
       }
       if (defaultComment.comment == '') {
         inputs['comment'].focus()
-        // this.alert.show({
-        //   type: '',
-        //   text: '好歹也写点文字嘛ヾ(๑╹◡╹)ﾉ"',
-        //   ctxt: '好的'
-        // })
-        Tips('好歹也写点文字嘛ヾ(๑╹◡╹)ﾉ"');
+        this.alert.show({
+          type: '',
+          text: '好歹也写点文字嘛ヾ(๑╹◡╹)ﾉ"',
+          ctxt: '好的'
+        })
         return
       }
       if (defaultComment.nick == '') {
@@ -584,14 +534,14 @@ class Hitalk {
       while ((matched = defaultComment.comment.match(pReg))) {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
-          `<img src="${cdnprefix}newpaopao/${matched[1] +
+          `<img src="https://cdn.dode.top/newpaopao/${matched[1] +
           subfix}.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
         )
       }
       while ((matched = defaultComment.comment.match(aReg))) {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
-          `<img src="${cdnprefix}alu/${matched[1] +
+          `<img src="https://cdn.dode.top/alu/${matched[1] +
           subfix}.png" class="biaoqing alu" height=33 width=33 no-zoom />`
         )
       }
@@ -641,7 +591,6 @@ class Hitalk {
           comment.set(i, _v)
         }
       }
-      comment.set('emailHash', md5(defaultComment.mail.toLowerCase().trim()));
       comment.setACL(getAcl())
       comment
         .save()
@@ -663,7 +612,7 @@ class Hitalk {
               num = Number(_count.innerText) + 1
               _count.innerText = num
             } else {
-              this.el.querySelector('.count').innerHTML = '<i class="iconfont icon-mark"></i> Comments | <span class="noticom"><a><span class="num">1</span> 条评论</a></span>'
+              this.el.querySelector('.count').innerHTML = '评论(<span class="num">1</span>)'
             }
             insertDom(ret)
 
@@ -833,13 +782,5 @@ const padWithZeros = (vNumber, width) => {
   }
   return numAsString
 }
-
-const getIp = function () {
-  $.getJSON("https://api.ipify.org/?format=json",
-    function (json) {
-      defaultComment['ip'] = json.ip;
-    }
-  );
-};
 
 module.exports = Hitalk

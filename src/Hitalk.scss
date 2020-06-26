@@ -19,7 +19,7 @@
   }
 
   .vinput {
-    border: none;
+    // border: none;
     resize: none;
     outline: none;
     padding: 10px 0;
@@ -28,14 +28,14 @@
   }
 
   .vwrap {
-    border: 1px solid #f0f0f0;
+    // border: 1px solid #f0f0f0;
     border-radius: 4px;
     margin-bottom: 10px; // overflow: hidden;
     position: relative;
-    padding: 10px;
+    // padding: 10px;
 
     input {
-      background: transparent;
+      // background: transparent;
     }
 
     .welcome {
@@ -43,12 +43,16 @@
       padding-bottom: 10px;
       font-size: .875rem;
       color: rgb(117, 117, 117);
-      border-bottom: 1px #dedede dashed;
+      // border-bottom: 1px #dedede dashed;
       user-select: none;
 
       span {
         color: #9499a8;
         cursor: pointer;
+      }
+
+      .info-setting {
+        float: right;
       }
 
     }
@@ -60,7 +64,7 @@
 
       .vinput {
         width: 33.33%;
-        border-bottom: 1px #dedede dashed;
+        // border-bottom: 1px #dedede dashed;
       }
 
       &.item2 .vinput {
@@ -178,31 +182,34 @@
   // }
   .info {
     font-size: 0;
-    padding: 5px;
+    // padding: 5px;
+    margin-bottom: 50px;
 
     .col {
-      font-size: .875rem;
       display: inline-block;
       width: 50%;
       vertical-align: middle;
+      font-size: 14px;
+      font-weight: 400;
+      color: #9ca4d8;
     }
 
     .count {
       .num {
-        font-weight: 600;
-        font-size: 1.25rem;
+        font-weight: 400;
+        font-size: 1em;
       }
     }
   }
 
-  a {
-    text-decoration: none;
-    color: #555;
+  // a {
+  //   text-decoration: none;
+  //   color: #555;
 
-    &:hover {
-      color: #222;
-    }
-  }
+  //   &:hover {
+  //     color: #222;
+  //   }
+  // }
 
   >ul,
   >li {
@@ -231,7 +238,7 @@
     width: 100%;
     height: 8.75rem;
     font-size: .875rem;
-    border-bottom: 1px dashed #dedede;
+    // border-bottom: 1px dashed #dedede;
     background: url(https://cdn.dode.top/plbj.png) right bottom no-repeat;
   }
 
@@ -269,6 +276,7 @@
   }
 
   .vempty {
+    font-size: 14px;
     padding: 1.25px;
     text-align: center;
     color: #999;
@@ -321,10 +329,28 @@
           display: inline-block;
           padding: .2rem .5rem;
           background: #ededed;
-          color: #b3b1b1;
+          color: #795548;
           font-size: .75rem;
           border-radius: .2rem;
           margin-right: .3rem;
+
+          img {
+            vertical-align: middle;
+            width: 16px;
+            height: 16px;
+            display: inline;
+            margin-top: -2px;
+            margin-right: 5px;
+          }
+        }
+
+        .vsys.bozhu {
+          margin-right: 10px;
+          color: #fadfa3;
+          background: #78c3e5;
+          background: #030307;
+          border: 1px solid rgba(246,246,246,0.161);
+          font-weight: bold;
         }
       }
 
@@ -435,20 +461,26 @@
 
     .page-numbers {
       display: inline-block;
-      padding: 0 8px;
-      color: #828586;
-      cursor: pointer;
-    }
-
-    .page-numbers.current {
-      border-radius: 50%;
-      background: #ebebeb;
+      border-radius: 4px;
       min-width: 30px;
       height: 30px;
       line-height: 30px;
       text-align: center;
-      color: #c1c1c1;
-      font-size: 15px;
+      padding: 0 7px;
+      margin: 0 4px;
+      background: #f4f5f9;
+      color: #000;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .page-numbers:hover{
+      color: #fff !important;
+      background-color: #2942ff;
+    }
+
+    .page-numbers.current {
+      background: #2942ff;
+      color: #fff;
       cursor: default;
     }
 
