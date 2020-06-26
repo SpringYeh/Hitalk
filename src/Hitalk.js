@@ -1,17 +1,14 @@
 /*
- * @Author: Ihoey
- * @Email: mail@ihoey.com
+ * @Author: ihoey
  * @Date: 2018-04-20 23:53:17
- * @LastEditors: Ihoey
- * @LastEditTime: 2020-06-25 17:08:06
+ * @Last Modified by: ihoey
+ * @Last Modified time: 2019-06-24 19:20:50
  */
 
 import md5 from 'blueimp-md5'
 import marked from 'marked'
 import detect from './detect'
 import './Hitalk.scss'
-import { version } from '../package'
-import { HtmlUtil, Event, check, getLink, dateFormat, timeAgo } from './utils'
 
 const gravatar = {
   cdn: 'https://gravatar.loli.net/avatar/',
@@ -47,12 +44,12 @@ if (window.devicePixelRatio != undefined && window.devicePixelRatio >= 1.49) {
 class Hitalk {
   constructor(option) {
     this.md5 = md5
-    this.version = version
+    this.version = '1.2.0'
 
     const av = option.av || AV
     const appId = option.app_id || option.appId
     const appKey = option.app_key || option.appKey
-    const serverURLs = option.serverURLs || 'https://hitalk.dode.top'
+    const serverURLs = option.serverURLs || 'https://hitalk.cinzano.xyz'
 
     if (!appId || !appKey) {
       this.throw('初始化失败，请检查你的appid或者appkey.')
@@ -67,19 +64,18 @@ class Hitalk {
     this.page = 0
     // 评论数
     this.initCount()
-    // 初始化评论
-    !!option && this.init(option)
+      // 初始化评论
+      !!option && this.init(option)
   }
 
-  throw(msg) {
+  throw (msg) {
     throw new Error(`Hitalk: ${msg}`)
   }
 
   init(option) {
     try {
       // get el
-      let el =
-        {}.toString.call(option.el) === '[object HTMLDivElement]' ? option.el : document.querySelectorAll(option.el)[0]
+      let el = {}.toString.call(option.el) === '[object HTMLDivElement]' ? option.el : document.querySelectorAll(option.el)[0]
       if ({}.toString.call(el) != '[object HTMLDivElement]') {
         this.throw(`The target element was not found.`)
       }
@@ -91,9 +87,9 @@ class Hitalk {
       const inputEl = guest_info.map(item => {
         switch (item) {
           case 'nick':
-            return '<input name="nick" placeholder="称呼" class="vnick vinput" type="text">'
+            return '<input name="nick" placeholder="昵称" class="vnick vinput" type="text">'
           case 'mail':
-            return '<input name="mail" placeholder="邮箱(会收到提醒哦~)" class="vmail vinput" type="email">'
+            return '<input name="mail" placeholder="邮箱" class="vmail vinput" type="email">'
           case 'link':
             return '<input name="link" placeholder="网址 http(s)://" class="vlink vinput" type="text">'
           default:
@@ -105,7 +101,9 @@ class Hitalk {
       let placeholder = option.placeholder || ''
       let eleHTML = `
       <div class="vwrap">
-          <div class="welcome dn">欢迎回来，{name}！<span class="info-edit">修改</span></div>
+          <div class="welcome dn">
+          	<i class="iconfont icon-admin"></i> &nbsp;&nbsp;{name}，你好
+          	<i class="iconfont icon-setting-o"></i><span class="info-edit">修改资料</span></div>
           <div class="${`vheader item${inputEl.length}`}">${inputEl.join('')}</div>
           <div class="vedit">
               <textarea class="veditor vinput" placeholder="${placeholder}"></textarea>
@@ -169,12 +167,12 @@ class Hitalk {
         )
       else
         console &&
-          console.log(
-            `%c${ex}\n%cHitalk%c${this.version} ${issue}`,
-            'color:red;',
-            'background:#000;padding:5px;line-height:30px;color:#fff;',
-            'background:#456;line-height:30px;padding:5px;color:#fff;'
-          )
+        console.log(
+          `%c${ex}\n%cHitalk%c${this.version} ${issue}`,
+          'color:red;',
+          'background:#000;padding:5px;line-height:30px;color:#fff;',
+          'background:#456;line-height:30px;padding:5px;color:#fff;'
+        )
       return
     }
 
@@ -182,7 +180,9 @@ class Hitalk {
     // alert
     this.alert = {}
     this.alert.show = o => {
-      _mark.innerHTML = `<div class="valert txt-center"><div class="vtext">${o.text}</div><div class="vbtns"></div></div>`
+      _mark.innerHTML = `<div class="valert txt-center"><div class="vtext">${
+        o.text
+      }</div><div class="vbtns"></div></div>`
       let _vbtns = _mark.querySelector('.vbtns')
       let _cBtn = `<button class="vcancel vbtn">${(o && o.ctxt) || '我再看看'}</button>`
       let _oBtn = `<button class="vsure vbtn">${(o && o.otxt) || '继续提交'}</button>`
@@ -254,14 +254,93 @@ class Hitalk {
       }
     }
 
+    let query = () => {
+      this.loading.show()
+      let cq = this.commonQuery()
+      cq.limit(this.pageSize)
+        .skip(this.page * this.pageSize)
+        .find()
+        .then(rets => {
+
+          addSmilies() // 填充表情
+
+          let len = rets.length
+          if (len) {
+            this.el.querySelector('.vlist').innerHTML = ''
+            for (let i = 0; i < len; i++) {
+              insertDom(rets[i], !0)
+            }
+            let _count = this.el.querySelector('.num')
+            if (!_count) {
+              // addSmilies() // 填充表情
+
+              cq.count().then(len => {
+                const _pageCount = len / this.pageSize
+                this.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`
+
+                const _pageDom = (_class, _text) => `<span class="${_class} page-numbers">${_text}</span>`
+                let vpageDom = _pageDom('prev dn', '&lt;')
+                for (let index = 1; index < _pageCount; index++) {
+                  vpageDom += _pageDom(`numbers ${index == 1 ? 'current' : ''}`, index)
+                }
+                vpageDom += _pageDom('next dn', '&gt;')
+                this.el.querySelector('.vpage').innerHTML = vpageDom
+                pageHandle(len)
+
+                Event.on('click', this.el.querySelector('.vpage'), e => {
+                  const inc = v => e.target.className.split(' ').includes(v)
+                  if (inc('current') || inc('vpage')) {
+                    return
+                  }
+                  if (inc('numbers')) {
+                    this.page = Number(e.target.innerText) - 1
+                  } else if (inc('prev')) {
+                    this.page--
+                  } else if (inc('next')) {
+                    this.page++
+                  }
+                  query()
+                })
+              })
+            } else {
+              pageHandle(_count.innerText)
+            }
+          }
+          this.loading.hide()
+        })
+        .catch(ex => {
+          this.loading.hide()
+          this.throw(ex)
+        })
+    }
+    query()
+
+    let pageHandle = _count => {
+      if (this.el.querySelector('.vpage .numbers.current')) {
+        this.el.querySelector('.vpage .numbers.current').classList.remove('current')
+      }
+      this.el.querySelectorAll('.vpage .numbers')[this.page].classList.add('current')
+
+      const domClass = {
+        0: '.prev',
+        [parseInt(_count / this.pageSize, 10) - 1]: '.next'
+      }
+
+      Object.values(domClass).map(e => this.el.querySelector(`.vpage ${e}`).classList.remove('dn'))
+      if (domClass[this.page]) {
+        this.el.querySelector(`.vpage ${domClass[this.page]}`).classList.add('dn')
+        return
+      }
+    }
+
     let insertDom = (ret, mt) => {
       let _vcard = document.createElement('li')
       _vcard.setAttribute('class', 'vcard')
       _vcard.setAttribute('id', ret.id)
       let _ua = detect(ret.get('ua'))
-      let _img = gravatar['hide']
-        ? ''
-        : `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`
+      let _img = gravatar['hide'] ?
+        '' :
+        `<img class="vimg" src='${gravatar.cdn + md5(ret.get('mail') || ret.get('nick')) + gravatar.params}'>`
       _vcard.innerHTML = `${_img}<section><div class="vhead"><a rel="nofollow" href="${getLink({
         link: ret.get('link'),
         mail: ret.get('mail')
@@ -304,9 +383,8 @@ class Hitalk {
         _ul.setAttribute('class', 'smilies-items smilies-items-biaoqing' + (y == sl ? ' smilies-items-show' : ''))
         _ul.setAttribute('data-id', i)
         smiliesData[y].split('|').forEach(e => {
-          _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${
-            (y == sl ? '@' : '#') + `(${e})`
-          }"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${
+          _ul.innerHTML += `<li class="smilies-item" title="${e}" data-input="${(y == sl ? '@' : '#') +
+            `(${e})`}"><img class="biaoqing ${y == sl ? 'newpaopao' : 'alu'}" title="${e}" src="https://cdn.dode.top/${
             y == sl ? 'newpaopao' : 'alu'
           }/${e + subfix}.png"></li>`
         })
@@ -354,82 +432,6 @@ class Hitalk {
       })
     }
 
-    let query = () => {
-      this.loading.show()
-      addSmilies() // 填充表情
-      let cq = this.commonQuery()
-      cq.limit(this.pageSize)
-        .skip(this.page * this.pageSize)
-        .find()
-        .then(rets => {
-          let len = rets.length
-          if (len) {
-            this.el.querySelector('.vlist').innerHTML = ''
-            for (let i = 0; i < len; i++) {
-              insertDom(rets[i], !0)
-            }
-            let _count = this.el.querySelector('.num')
-            if (!_count) {
-              cq.count().then(len => {
-                const _pageCount = Math.ceil(len / this.pageSize)
-                this.el.querySelector('.count').innerHTML = `评论(<span class="num">${len}</span>)`
-
-                const _pageDom = (_class, _text) => `<span class="${_class} page-numbers">${_text}</span>`
-                let vpageDom = _pageDom('prev dn', '&lt;')
-                for (let index = 1; index <= _pageCount; index++) {
-                  vpageDom += _pageDom(`numbers ${index == 1 ? 'current' : ''}`, index)
-                }
-                vpageDom += _pageDom('next dn', '&gt;')
-                this.el.querySelector('.vpage').innerHTML = vpageDom
-
-                pageHandle(len)
-
-                Event.on('click', this.el.querySelector('.vpage'), e => {
-                  const inc = v => e.target.className.split(' ').includes(v)
-                  if (inc('current') || inc('vpage')) {
-                    return
-                  }
-                  if (inc('numbers')) {
-                    this.page = Number(e.target.innerText) - 1
-                  } else if (inc('prev')) {
-                    this.page--
-                  } else if (inc('next')) {
-                    this.page++
-                  }
-                  query()
-                })
-              })
-            } else {
-              pageHandle(_count.innerText)
-            }
-          }
-          this.loading.hide()
-        })
-        .catch(ex => {
-          this.loading.hide()
-          this.throw(ex)
-        })
-    }
-    query()
-
-    let pageHandle = _count => {
-      if (this.el.querySelector('.vpage .numbers.current')) {
-        this.el.querySelector('.vpage .numbers.current').classList.remove('current')
-      }
-      this.el.querySelectorAll('.vpage .numbers')[this.page].classList.add('current')
-
-      const domClass = {
-        0: '.prev',
-        [Math.ceil(_count / this.pageSize, 10) - 1]: '.next'
-      }
-
-      Object.values(domClass).map(e => this.el.querySelector(`.vpage ${e}`).classList.remove('dn'))
-      if (domClass[this.page]) {
-        this.el.querySelector(`.vpage ${domClass[this.page]}`).classList.add('dn')
-        return
-      }
-    }
-
     let mapping = {
       veditor: 'comment'
     }
@@ -445,12 +447,12 @@ class Hitalk {
         inputs[_v] = _el
         Event.on('input', _el, e => {
           defaultComment[_v] =
-            _v === 'comment'
-              ? marked(_el.value, {
-                  sanitize: !0,
-                  breaks: !0
-                })
-              : HtmlUtil.encode(_el.value)
+            _v === 'comment' ?
+            marked(_el.value, {
+              sanitize: !0,
+              breaks: !0
+            }) :
+            HtmlUtil.encode(_el.value)
         })
       }
     }
@@ -532,17 +534,15 @@ class Hitalk {
       while ((matched = defaultComment.comment.match(pReg))) {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
-          `<img src="https://cdn.dode.top/newpaopao/${
-            matched[1] + subfix
-          }.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
+          `<img src="https://cdn.dode.top/newpaopao/${matched[1] +
+            subfix}.png" class="biaoqing newpaopao" height=30 width=30 no-zoom />`
         )
       }
       while ((matched = defaultComment.comment.match(aReg))) {
         defaultComment.comment = defaultComment.comment.replace(
           matched[0],
-          `<img src="https://cdn.dode.top/alu/${
-            matched[1] + subfix
-          }.png" class="biaoqing alu" height=33 width=33 no-zoom />`
+          `<img src="https://cdn.dode.top/alu/${matched[1] +
+            subfix}.png" class="biaoqing alu" height=33 width=33 no-zoom />`
         )
       }
 
@@ -661,6 +661,126 @@ class Hitalk {
     Event.off('click', submitBtn, submitEvt)
     Event.on('click', submitBtn, submitEvt)
   }
+}
+
+const Event = {
+  on(type, el, handler, capture) {
+    if (el.addEventListener) el.addEventListener(type, handler, capture || false)
+    else if (el.attachEvent) el.attachEvent(`on${type}`, handler)
+    else el[`on${type}`] = handler
+  },
+  off(type, el, handler, capture) {
+    if (el.removeEventListener) el.removeEventListener(type, handler, capture || false)
+    else if (el.detachEvent) el.detachEvent(`on${type}`, handler)
+    else el[`on${type}`] = null
+  }
+}
+
+const getLink = target => {
+  return target.link || (target.mail && `mailto:${target.mail}`) || 'javascript:void(0);'
+}
+
+const check = {
+  mail(m) {
+    return {
+      k: /[\w-\.]+@([\w-]+\.)+[a-z]{2,3}/.test(m),
+      v: m
+    }
+  },
+  link(l) {
+    l = l.length > 0 && (/^(http|https)/.test(l) ? l : `http://${l}`)
+    return {
+      k: /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/.test(l),
+      v: l
+    }
+  }
+}
+
+const HtmlUtil = {
+  /**
+   * HTML转码
+   * @param {String} str
+   * @return {String} result
+   */
+  encode(str) {
+    return !!str ?
+      str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/ /g, '&nbsp;')
+      .replace(/\'/g, '&#39;')
+      .replace(/\"/g, '&quot;') :
+      ''
+  },
+  /**
+   * HTML解码
+   * @param {String} str
+   * @return {String} result
+   */
+  decode(str) {
+    return !!str ?
+      str
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&#39;/g, "'")
+      .replace(/&quot;/g, '"') :
+      ''
+  }
+}
+
+const dateFormat = date => {
+  const vDay = padWithZeros(date.getDate(), 2)
+  const vMonth = padWithZeros(date.getMonth() + 1, 2)
+  const vYear = padWithZeros(date.getFullYear(), 2)
+  return `${vYear}-${vMonth}-${vDay}`
+}
+
+const timeAgo = date => {
+  try {
+    const oldTime = date.getTime()
+    const currTime = new Date().getTime()
+    const diffValue = currTime - oldTime
+
+    const days = Math.floor(diffValue / (24 * 3600 * 1000))
+    if (days === 0) {
+      //计算相差小时数
+      const leave1 = diffValue % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
+      const hours = Math.floor(leave1 / (3600 * 1000))
+      if (hours === 0) {
+        //计算相差分钟数
+        const leave2 = leave1 % (3600 * 1000) //计算小时数后剩余的毫秒数
+        const minutes = Math.floor(leave2 / (60 * 1000))
+        if (minutes === 0) {
+          //计算相差秒数
+          const leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
+          const seconds = Math.round(leave3 / 1000)
+          return seconds + ' 秒前'
+        }
+        return minutes + ' 分钟前'
+      }
+      return hours + ' 小时前'
+    }
+    if (days < 0) return '刚刚'
+
+    if (days < 8) {
+      return days + ' 天前'
+    } else {
+      return dateFormat(date)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const padWithZeros = (vNumber, width) => {
+  let numAsString = vNumber.toString()
+  while (numAsString.length < width) {
+    numAsString = '0' + numAsString
+  }
+  return numAsString
 }
 
 module.exports = Hitalk
