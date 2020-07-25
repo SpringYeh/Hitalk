@@ -74,8 +74,8 @@ class Hitalk {
     // 分页
     this.pageSize = option.pageSize || 10
     this.page = 0
-    // 评论数
-    this.initCount()
+    // 首页meta评论数（已在其他地方实现）
+    // this.initCount()
     // 初始化评论
     !!option && this.init(option)
   }
@@ -247,6 +247,7 @@ class Hitalk {
   }
 
   initCount() {
+    // 首页文章列表 meta 评论数
     const pCount = document.querySelectorAll('.hitalk-comment-count')
     if (!pCount.length) return false
 
@@ -255,7 +256,8 @@ class Hitalk {
 
     for (let i = 0; i < pCount.length; i++) {
       const el = pCount[i]
-      const url = el.getAttribute('data-xid').replace(/index\.(html|htm)/, '')
+      // const url = el.getAttribute('data-xid').replace(/index\.(html|htm)/, '')
+      const url = el.getAttribute('data-url')
 
       urlArr[i] = url
       vArr[i] = this.commonQuery(url)
